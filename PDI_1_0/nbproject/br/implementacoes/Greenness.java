@@ -302,20 +302,20 @@ public class Greenness {
 			}
 		}
 		
-		System.out.println("-----------imagem DIF---------");
-		for (int i = 0; i < img.getWidth(); i++) {
-			for (int j = 0; j < img.getHeight(); j++) {
-				Color x = new Color(img.getRGB(i, j));
-				int cor = x.getGreen();
-				Color y = new Color(res.getRGB(i, j));
-				int cory = y.getGreen();
-				int dif = cor - cory;
-				if(dif != 0) {
-					System.out.println(dif);
-				}
-				
-			}
-		}
+//		System.out.println("-----------imagem DIF---------");
+//		for (int i = 0; i < img.getWidth(); i++) {
+//			for (int j = 0; j < img.getHeight(); j++) {
+//				Color x = new Color(img.getRGB(i, j));
+//				int cor = x.getGreen();
+//				Color y = new Color(res.getRGB(i, j));
+//				int cory = y.getGreen();
+//				int dif = cor - cory;
+//				if(dif != 0) {
+//					System.out.println(dif);
+//				}
+//				
+//			}
+//		}
 		
 		return res;
 	}
