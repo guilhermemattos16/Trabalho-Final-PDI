@@ -109,7 +109,7 @@ public class PDI_Lote extends javax.swing.JFrame {
 
         jLabel5.setText("Qual (s):");
 
-        tecnica01.setText("Tecnica 01");
+        tecnica01.setText("EqualizaÁ„o por Bi-Histograma");
         tecnica01.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tecnica01ActionPerformed(evt);
@@ -219,40 +219,33 @@ public class PDI_Lote extends javax.swing.JFrame {
                 //NOME DAS IMAGENS SELECIONADAS PARA PROCESSAMENTO
                 pastaSalvar = CaminhoSaidaImagem.getText();
                 pathsOriginal = fileOriginal.listFiles();
-                //FILE SEPARATOR: CORRESPONDENTE A SEPARA√á√ÉO DE PASTA DO SISTEMA OPERACIONAL UTILIZADO
+                //FILE SEPARATOR: CORRESPONDENTE A SEPARA«√O DE PASTA DO SISTEMA OPERACIONAL UTILIZADO
                 //EXEMPLO: WINDOWS (\\) , LINUX E MAC (//)
                 pastaSalvar += File.separator;
 
                 if (!Paths.get(pastaSalvar).toFile().exists()) {
                     (new File(pastaSalvar)).mkdir();
                 }
-                //Para cada t√©cnica, seguir o padrao, colo um itembox com o nome da t√©cnica
-                //mudar a variavel NOME na sa√≠da do arquivo...
-                //EXEMPLO DE T√âCNICA QUE PRECISA DE UM PARAMETRO DE ENTRADA....
+                //EXEMPLO DE T…CNICA QUE PRECISA DE UM PARAMETRO DE ENTRADA....
                 if (tecnica01.isSelected()) {
-                    //String k = JOptionPane.showInputDialog(null, "Entre com um valor para K: ");
-                    //float converteK = Float.parseFloat(k);
                     for (File pathtecnica01 : pathsOriginal) {
                         String imagevariavelK = pathtecnica01.getName();
-                        //DIVISAO DO NOME DA IMAGEM SEM SUA EXTENS√ÉO PARA COMPARA√á√ÉO FUTURA
+                        //DIVISAO DO NOME DA IMAGEM SEM SUA EXTENS√O PARA COMPAR«√O FUTURA
                         imagevariavelK = imagevariavelK.substring(0, (imagevariavelK.length() - 4));
                         BufferedImage imgvariavelK = ImageIO.read(pathtecnica01);
                         //Cria imagem resultante
                         BufferedImage resvariavelK, outvariavelK = new BufferedImage(imgvariavelK.getWidth(), imgvariavelK.getHeight(), imgvariavelK.getType());
                         //CRIA OBJETO DA CLASSE 
-                        //Neste exemplo, utiliza-se a t√©cnica que est√° na classe Greeness
+                        //Neste exemplo, utiliza-se a tÈcnica que est· na classe Greeness
                         Greenness WA = new Greenness();
                         //IMAGEM RESULTANTE DA FORMULA
                         // ----- APLICACAO DA TECNICA -------
                         resvariavelK = WA.GreennKG(imgvariavelK);
-                        //Nome que vai no nome do arquivo para identificar t√©cnica.
-                        Nome = "_KG";
+                        //Nome que vai no nome do arquivo para identificar tÈcnica.
+                        Nome = "_BHE2PL";
                         //SAIDA CONTENDO CAMINHO DA IMAGEM + NOME DA IMAGEM
                         String aSaida = pastaSalvar + imagevariavelK + Nome + ".png";
                         File outputFile = new File(aSaida);
-                        //CHAMADA METODO KMEANS COMO PARAMETRO A IMAGEM RESULTADO 
-                        //canvas = new PDIKmeansGray(resvariavelK);
-                        //outvariavelK = canvas.getImage();
                         //SALVA A IMAGEM
                         ImageIO.write(resvariavelK, "png", outputFile);
                     }
