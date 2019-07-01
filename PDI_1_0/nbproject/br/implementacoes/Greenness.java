@@ -11,6 +11,7 @@ import swing.janelas.PDI_Lote;
  * 
  * @author Flavia Mattos & Arthur Costa
  */
+@SuppressWarnings("unused")
 public class Greenness {
 
 	/**
@@ -25,8 +26,6 @@ public class Greenness {
 		BufferedImage res = new BufferedImage(img.getWidth(), img.getHeight(), img.getType());
 
 		// COMEÇO NORMALIZAÇÃO
-		double min = 0;
-		double max = 0;
 		int histograma[] = new int[256];
 		int histogramaAux[] = new int[256];
 		int histograma1[] = new int[256];
@@ -56,7 +55,7 @@ public class Greenness {
 		float pku = 0;
 		float p1 = 0;
 		float p2 = 0;
-		
+
 		// Inicializa os vetores dos histogramas
 		for (int i=0; i<256; i++) {
 			histograma[i] = 0;
@@ -68,38 +67,52 @@ public class Greenness {
 			histogramaEqualizado1[i]=0;
 			histogramaEqualizado2[i]=0;
 		}
-		
+
+		Converte conversao[][] = new Converte[res.getWidth()][res.getHeight()];
+
+		Converte a = new Converte();
+		for (int linha = 0; linha < res.getWidth(); linha++) {
+			for (int coluna = 0; coluna < res.getHeight(); coluna++) {
+
+				Color rgb = new Color(img.getRGB(linha, coluna));
+				conversao[linha][coluna] = a.rgbParaYiq(rgb);	
+			}
+		}
+
+
 		// Gera o Histograma
 		for (int i = 0; i < img.getWidth(); i++) {
 			for (int j = 0; j < img.getHeight(); j++) {
-				Color x = new Color(img.getRGB(i, j));
-				int cor = x.getGreen();
+				//Color x = new Color(img.getRGB(i, j));
+				//int cor = x.getY();
+
+				int cor = (int) (conversao[i][j].getY() + 0.5);
 
 				histograma[cor]++;
 			}
 		}
-		
+
 		// Calcula a quantidade de pixels
 		cont = img.getWidth()*img.getHeight();
 
 		// Exibe o histograma da imagem original
-		System.out.println("\nHistograma Original: ");
-		for (int i = 0; i<256; i++) {
-			System.out.println(histograma[i]);
-		}
-		
+		//		System.out.println("\nHistograma Original: ");
+		//		for (int i = 0; i<256; i++) {
+		//			System.out.println(histograma[i]);
+		//		}
+
 
 		// Calcula a média SP do histograma da imagem original
 		for (int i = 0; i < 256; i++) {
 			sp += (histograma[i]/cont) * i;
 		}
-		System.out.println("\nSP: " +sp);
-//		// Exibe a quantidade total de pixels da imagem
-//		System.out.println("final: " +cont);
-//		
-//		// Exibe a média SP
-//		System.out.println("SP: " +sp);
-//		
+		//		System.out.println("\nSP: " +sp);
+		//		// Exibe a quantidade total de pixels da imagem
+		//		System.out.println("final: " +cont);
+		//		
+		//		// Exibe a média SP
+		//		System.out.println("SP: " +sp);
+		//		
 		for (int i=0; i<256; i++) {
 			if(i<=(int)sp) {
 				histograma1[i] = histograma[i];
@@ -107,71 +120,71 @@ public class Greenness {
 			else {
 				histograma2[i] = histograma[i];
 			}
-			
+
 			soma1 += histograma1[i];
 			soma2 += histograma2[i];
-			
+
 		}
-		
+
 		for (int i = 0; i < 256; i++) {
 			spl += (histograma1[i]/soma1) * i;
 		}
-		
+
 		for (int i = 0; i < 256; i++) {
 			spu += (histograma2[i]/soma2) * i;
 		}
-		
+
 		grl1 = (sp - spl)/(sp);
-		
-		System.out.println("\ngrl1: "+grl1);
-		
+
+		//		System.out.println("\ngrl1: "+grl1);
+
 		if (grl1 > 0.5) {
 			dl = (1 - grl1)/2;
 		}
 		else if (grl1 <= 0.5) {
 			dl = grl1/2;
 		}
-		
+
 		grl2 = grl1 + dl;
-		System.out.println("\ngrl2: "+grl2);
-		
+		//		System.out.println("\ngrl2: "+grl2);
+
 		gru1 = (255 - spu)/(255 - sp);
 
-		System.out.println("\ngru1: "+gru1);
-		
+		//		System.out.println("\ngru1: "+gru1);
+
 		if (gru1 > 0.5) {
 			du = (1 - gru1)/2;
 		}
 		else if (gru1 <= 0.5) {
 			du = gru1/2;
 		}
-		
+
 		gru2 = gru1 + du;
-		
-		System.out.println("\ngru2: "+gru2);
-		
+
+		//		System.out.println("\ngru2: "+gru2);
+
 		for(int i=0; i<=(int)sp; i++) {
 			if (pkl < histograma1[i]) {
 				pkl = histograma1[i];
 			}
 		}
-		
+
 		for(int i=(int)sp+1; i<256; i++) {
 			if (pku < histograma2[i]) {
 				pku = histograma2[i];
 			}
 		}
-		
+
 		pll1 = grl1 * pkl;
 		pll2 = grl2 * pkl;
 		plu1 = gru1 * pku;
 		plu2 = gru2 * pku;
-		
-		System.out.println("\npll1: "+pll1);
-		System.out.println("\npll2: "+pll2);
-		System.out.println("\nplu1: "+plu1);
-		System.out.println("\nplu2: "+plu2);
-		
+
+		//		System.out.println("\npll1: "+pll1);
+		//		System.out.println("\npll2: "+pll2);
+		//		System.out.println("\nplu1: "+plu1);
+		//		System.out.println("\nplu2: "+plu2);
+
 		for (int i=0; i<=(int)sp; i++) {
 			if (histograma1[i] <= pll2) {
 				histograma1[i] = (int) pll1;
@@ -180,7 +193,7 @@ public class Greenness {
 				histograma1[i] = (int) pll2;
 			}
 		}
-		
+
 		for (int i=(int)sp+1; i<256; i++) {
 			if (histograma2[i] <= plu2) {
 				histograma2[i] = (int) plu1;
@@ -189,136 +202,69 @@ public class Greenness {
 				histograma2[i] = (int) plu2;
 			}
 		}
-//		for(int i=0; i<=(int)sp; i++) {
-//			p1 += (histograma1[i]/(float)soma1);
-//		}
+
 		soma1 = 0;
 		for(int i=0; i<=(int)sp; i++) {
 			soma1 += histograma1[i];
 		}
-		
-		System.out.println("\n\\\\\\\\\\\\\\\\\\\\Novo Nivel 1: ");
+
+		//		System.out.println("\n\\\\\\\\\\\\\\\\\\\\Novo Nivel 1: ");
 		for(int i=0; i<=(int)sp; i++) {
 			p1 += (histograma1[i]/(float)soma1);
 			novoNivel = (int)(sp * p1);
 			nivelEqualizado1[i] = (int) novoNivel;
 			histogramaEqualizado1[(int) novoNivel] = histograma1[i];
-			
-			System.out.println(nivelEqualizado1[i] + "-----" + histogramaEqualizado1[(int) novoNivel]);
+
+			//			System.out.println(nivelEqualizado1[i] + "-----" + histogramaEqualizado1[(int) novoNivel]);
 		}
-		
+
 		novoNivel = 0;
-		
-//		for(int i=(int)sp+1; i<256; i++) {
-//			p2 += (histograma2[i]/(float)soma2);
-//		}
-		
+
 		soma2 = 0;
 		for(int i=(int)sp+1; i<256; i++) {
 			soma2 += histograma2[i];
 		}
-		
-		System.out.println("\n\\\\\\\\\\\\\\\\\\\\Novo Nivel 2: ");
+
 		for(int i=(int)sp+1; i<256; i++) {
 			p2 += (histograma2[i]/(float)soma2);
 			novoNivel = (int) ((sp+1) + (255 - (sp+1)) * p2);
 			nivelEqualizado2[i] = (int) novoNivel;
 			histogramaEqualizado2[(int)novoNivel] = histograma2[i];
-//			System.out.println("p2: " + novoNivel);
-			System.out.println(nivelEqualizado2[i] + "-----" + histogramaEqualizado2[(int) novoNivel]);
+			//			System.out.println(nivelEqualizado2[i] + "-----" + histogramaEqualizado2[(int) novoNivel]);
 		}
-		
-//		for (int i=0; i<256; i++) {
-//			if(i<=(int)sp) {
-//				histogramaAux[i] = nivelEqualizado1[i];
-//			}
-//			else {
-//				histogramaAux[i] = nivelEqualizado2[i];
-//			}
-//		}
-//		
-//		for (int i = 0; i<256; i++) {
-//		if (histograma[i] != 0) {
-//			min = i;
-//			break;
-//		}
-//	}
-	
-//	for (int i = 255; i>=0; i--) {
-//		if (histogramaAux[i] != 0) {
-//			max = i;
-//			break;
-//		}
-//	}
-		
-		//System.out.println("\n\nHistograma 1: ");
-		
-//		for(int i1=0; i1<(int)sp; i1++) {
-//			System.out.println(histograma1[i1]);
-//		}
-//		
-		//System.out.println("\n\nHistograma 2: ");
-		
-//		for(int i1=(int)sp+1; i1<256; i1++) {
-//			System.out.println(histograma2[i1]);
-//		}
-		
-//		System.out.println("\n\nHistograma Final: ");
-//		int somaFinal = 0;
-//		for(int i1=0; i1<256; i1++) {
-//			System.out.println(histogramaAux[i1]);
-//			somaFinal += histogramaAux[i1];
-//		}
-//		System.out.println("\n\nSoma Final: " + somaFinal);
-		//FINAL NORMALIZAÃ‡ÃƒO
 
+		for (int linha = 0; linha < res.getWidth(); linha++) {
+			for (int coluna = 0; coluna < res.getHeight(); coluna++) {
+				
+			}
+		}
+
+		// FINAL NORMALIZAÇÃO
 		for (int i = 0; i < img.getWidth(); i++) {
 			for (int j = 0; j < img.getHeight(); j++) {
-
-				Color p = new Color(img.getRGB(i, j));
-				int atual = p.getGreen();
+				
+				Color rgb = new Color(0);
+				rgb = conversao[i][j].yiqParaRgb(conversao[i][j]);	
+				
+//				Color p = new Color(img.getRGB(i, j));
+				
+				int atual = (int) (a.getY() + 0.5);
 				int cor = 0;
 				int cor1 = 0;
+
 				if (atual <= sp) {
 					cor = nivelEqualizado1[atual];
-//					if(cor1 != cor) {
-//						cor1 = cor;
-//						System.out.println(atual + " -----" + cor);
-//					}
 				}
 				else if(atual > sp) {
 					cor = nivelEqualizado2[atual];
-//					if(cor1 != cor) {
-//						cor1 = cor;
-//						System.out.println(atual + " -----" + cor);
-//					}
 				}
-				
-				//int cor = p.getGreen();
-				//int cor1 = histograma[cor];
-
-				Color novo = new Color(cor, cor, cor);
-				res.setRGB(i, j, novo.getRGB());
+				res.setRGB(i, j, rgb.getRGB());
 			}
 		}
-		
-//		System.out.println("-----------imagem DIF---------");
-//		for (int i = 0; i < img.getWidth(); i++) {
-//			for (int j = 0; j < img.getHeight(); j++) {
-//				Color x = new Color(img.getRGB(i, j));
-//				int cor = x.getGreen();
-//				Color y = new Color(res.getRGB(i, j));
-//				int cory = y.getGreen();
-//				int dif = cor - cory;
-//				if(dif != 0) {
-//					System.out.println(dif);
-//				}
-//				
-//			}
-//		}
-		
+
 		return res;
 	}
+
 }
 
 
